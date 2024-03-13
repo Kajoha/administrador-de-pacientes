@@ -2,9 +2,10 @@
 rafc usa const con un arrow function
 */
 import { useState } from 'react' /* Para poder usar los hooks tengo que hacer este impor*/
+import Error from './Error';
 
 
-const Formulario = () => {
+const Formulario = ({ pacientes, setPacientes }) => {
     /* Los hooks deben ir antes del return pero tambien deben ir antes que otras funciones y no pueden 
     ir fuera del componente*/
     /* setNombre('Hook') - setnombre es la función modificadora del estado */
@@ -16,6 +17,13 @@ const Formulario = () => {
 
     const [error, setError] = useState(false)
 
+    const generarId = () => {
+        const random = Math.random().toString(36).substring(2);
+        const fecha = Date.now().toString(36)
+
+        return random + fecha;
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         //Validación del formulario
@@ -25,6 +33,25 @@ const Formulario = () => {
             setError(true)
             return
         } setError(false)
+
+        //Objeto de paciente
+        const objetoPaciente = {
+            nombre,
+            propietario,
+            email,
+            fecha,
+            sintomas,
+            id: generarId()
+        }
+
+        setPacientes([...pacientes, objetoPaciente])
+        // Reiniciar el form
+        setNombre('')
+        setPropietario('')
+        setEmail('')
+        setFecha('')
+        setSintomas('')
+
     }
 
     return (
@@ -38,7 +65,7 @@ const Formulario = () => {
             <form
                 onSubmit={handleSubmit}
                 className="bg-white shadow-md rounded-lg py-10 px-5 mb-10 mx-5">
-                {error && <div className='bg-red-800 text-white text-center p-3 uppercase font-bold mb-3 rounded-md '><p>Todos los campos son obligatorios</p></div>}
+                {error && <Error><p>Todos los campos son obligatorios</p></Error>}
 
                 <div className="mb-5">
                     <label htmlFor="mascota" className="block text-gray-700 uppercase font-bold">Nombre mascota</label>
